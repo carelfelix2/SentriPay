@@ -31,7 +31,7 @@ class CreateNewUser implements CreatesNewUsers
             'name' => $input['name'],
             'email' => $input['email'],
             'phone' => $input['phone'],
-            'role' => 'user',
+            'role' => 'buyer',
             'password' => Hash::make($input['password']),
             'balance' => 0,
             'kyc_verified' => false,

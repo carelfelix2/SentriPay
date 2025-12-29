@@ -14,6 +14,8 @@ class Dashboard extends Component
     public $totalPurchases = 0;
     public $balance = 0;
     public $recentOrders = [];
+    public $availableProducts = [];
+    public $myProducts = [];
 
     public function mount()
     {
@@ -26,6 +28,7 @@ class Dashboard extends Component
 
     public function loadData()
     {
+        // Load orders data
         if ($this->user->role === 'seller') {
             $this->totalOrders = Order::where('seller_id', $this->user->id)->count();
             $this->totalSales = Order::where('seller_id', $this->user->id)
@@ -47,6 +50,20 @@ class Dashboard extends Component
         }
 
         $this->balance = $this->user->balance;
+
+        // Load products
+        $this->availableProducts = Product::where('status', 'available')
+            ->where('user_id', '!=', $this->user->id)
+            ->where('stock', '>', 0)
+            ->with('seller')
+            ->latest()
+            ->take(6)
+            ->get();
+
+        $this->myProducts = Product::where('user_id', $this->user->id)
+            ->latest()
+            ->take(6)
+            ->get();
     }
 
     public function render()
