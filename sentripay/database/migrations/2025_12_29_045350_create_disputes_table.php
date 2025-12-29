@@ -41,7 +41,7 @@ return new class extends Migration
                 'keep_with_seller',     // Uang tetap ke penjual
                 'split',                // Bagi dua
                 'pending'               // Belum ditentukan
-            ])->default('pending')->after('admin_notes');
+            ])->default('pending');
             $table->foreignId('reviewed_by')->nullable()->constrained('users', 'id')->onDelete('set null');
             $table->timestamp('resolved_at')->nullable();
             $table->timestamps();

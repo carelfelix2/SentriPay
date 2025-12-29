@@ -2,20 +2,28 @@
 
 namespace App\Models;
 
+// use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Laravel\Fortify\TwoFactorAuthenticatable;
+use Laravel\Jetstream\HasProfilePhoto;
+use Laravel\Sanctum\HasApiTokens;
 
 class User extends Authenticatable
 {
+    use HasApiTokens;
+
     /** @use HasFactory<\Database\Factories\UserFactory> */
-    use HasFactory, Notifiable;
+    use HasFactory;
+    use HasProfilePhoto;
+    use Notifiable;
+    use TwoFactorAuthenticatable;
 
     /**
      * The attributes that are mass assignable.
      *
-     * @var list<string>
+     * @var array<int, string>
      */
     protected $fillable = [
         'name',
@@ -24,25 +32,33 @@ class User extends Authenticatable
         'role',
         'phone',
         'address',
-        'city',
-        'province',
-        'postal_code',
         'bank_name',
-        'bank_account',
-        'account_holder',
+        'bank_account_number',
+        'bank_account_name',
         'balance',
+        'kyc_verified',
         'status',
-        'verified_at',
     ];
 
     /**
      * The attributes that should be hidden for serialization.
      *
-     * @var list<string>
+     * @var array<int, string>
      */
     protected $hidden = [
         'password',
         'remember_token',
+        'two_factor_recovery_codes',
+        'two_factor_secret',
+    ];
+
+    /**
+     * The accessors to append to the model's array form.
+     *
+     * @var array<int, string>
+     */
+    protected $appends = [
+        'profile_photo_url',
     ];
 
     /**
@@ -54,51 +70,50 @@ class User extends Authenticatable
     {
         return [
             'email_verified_at' => 'datetime',
-            'verified_at' => 'datetime',
             'password' => 'hashed',
             'balance' => 'decimal:2',
+            'kyc_verified' => 'boolean',
         ];
     }
 
-    // Relationships
-    public function productsForSale(): HasMany
+    // SentriPay Relationships
+    public function productsForSale()
     {
-        return $this->hasMany(Product::class);
+        return $this->hasMany(Product::class, 'user_id');
     }
 
-    public function buyerOrders(): HasMany
+    public function buyerOrders()
     {
         return $this->hasMany(Order::class, 'buyer_id');
     }
 
-    public function sellerOrders(): HasMany
+    public function sellerOrders()
     {
         return $this->hasMany(Order::class, 'seller_id');
     }
 
-    public function complaintsRaised(): HasMany
+    public function complaintsRaised()
     {
         return $this->hasMany(Dispute::class, 'complained_by');
     }
 
-    public function complaintsAgainst(): HasMany
+    public function complaintsReceived()
     {
         return $this->hasMany(Dispute::class, 'complained_against');
     }
 
-    public function transactionsAsFrom(): HasMany
+    public function transactionsAsFrom()
     {
         return $this->hasMany(Transaction::class, 'from_user_id');
     }
 
-    public function transactionsAsTo(): HasMany
+    public function transactionsAsTo()
     {
         return $this->hasMany(Transaction::class, 'to_user_id');
     }
 
-    public function disputesReviewed(): HasMany
+    public function resolvedDisputes()
     {
         return $this->hasMany(Dispute::class, 'reviewed_by');
     }
 }
-
