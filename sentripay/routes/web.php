@@ -15,25 +15,6 @@ Route::get('/', function () {
 Route::get('/products', ProductBrowser::class)->name('products');
 Route::get('/checkout/{productId}', CheckoutOrder::class)->name('checkout');
 
-// Auth Routes (menggunakan Laravel default)
-Route::middleware('guest')->group(function () {
-    Route::get('/login', function () {
-        return view('auth.login');
-    })->name('login');
-    
-    Route::get('/register', function () {
-        return view('auth.register');
-    })->name('register');
-    
-    Route::post('/login', function () {
-        // Auth logic
-    })->name('login.post');
-    
-    Route::post('/register', function () {
-        // Register logic
-    })->name('register.post');
-});
-
 // Protected Routes
 Route::middleware('auth')->group(function () {
     // Dashboard

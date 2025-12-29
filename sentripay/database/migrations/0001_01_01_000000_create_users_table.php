@@ -20,6 +20,18 @@ return new class extends Migration
             $table->rememberToken();
             $table->foreignId('current_team_id')->nullable();
             $table->string('profile_photo_path', 2048)->nullable();
+            
+            // SentriPay custom fields
+            $table->enum('role', ['buyer', 'seller', 'admin'])->default('buyer');
+            $table->string('phone')->nullable();
+            $table->text('address')->nullable();
+            $table->string('bank_name')->nullable();
+            $table->string('bank_account_number')->nullable();
+            $table->string('bank_account_name')->nullable();
+            $table->decimal('balance', 15, 2)->default(0);
+            $table->boolean('kyc_verified')->default(false);
+            $table->enum('status', ['active', 'suspended', 'banned'])->default('active');
+            
             $table->timestamps();
         });
 
