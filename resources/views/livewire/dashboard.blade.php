@@ -104,9 +104,7 @@
                                 <td class="px-6 py-4 text-sm text-gray-600">Rp {{ number_format($order->total_amount, 0, ',', '.') }}</td>
                                 <td class="px-6 py-4 text-sm">
                                     <span class="inline-block px-3 py-1 text-xs rounded-full
-                                        {{ $order->status === 'completed' ? 'bg-green-100 text-green-800' : 
-                                           $order->status === 'pending_payment' ? 'bg-yellow-100 text-yellow-800' : 
-                                           'bg-blue-100 text-blue-800' }}">
+                                        {{ $order->status === 'completed' ? 'bg-green-100 text-green-800' : ($order->status === 'pending_payment' ? 'bg-yellow-100 text-yellow-800' : 'bg-blue-100 text-blue-800') }}">
                                         {{ ucfirst(str_replace('_', ' ', $order->status)) }}
                                     </span>
                                 </td>

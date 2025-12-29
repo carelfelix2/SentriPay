@@ -79,11 +79,9 @@
                                         Dashboard
                                     </a>
                                     
-                                    @if(Auth::user()->role === 'seller' || Auth::user()->role === 'admin')
-                                        <a href="{{ route('products.create') }}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
-                                            Tambah Produk
-                                        </a>
-                                    @endif
+                                    <a href="{{ route('products.create') }}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                                        Tambah Produk
+                                    </a>
                                     
                                     <form method="POST" action="{{ route('logout') }}">
                                         @csrf
@@ -145,11 +143,9 @@
                         </div>
 
                         <div class="mt-3 space-y-1">
-                            @if(Auth::user()->role === 'seller' || Auth::user()->role === 'admin')
-                                <a href="{{ route('products.create') }}" class="block pl-3 pr-4 py-2 text-base font-medium text-gray-600 hover:text-gray-800 hover:bg-gray-50">
-                                    Tambah Produk
-                                </a>
-                            @endif
+                            <a href="{{ route('products.create') }}" class="block pl-3 pr-4 py-2 text-base font-medium text-gray-600 hover:text-gray-800 hover:bg-gray-50">
+                                Tambah Produk
+                            </a>
                             
                             <form method="POST" action="{{ route('logout') }}">
                                 @csrf

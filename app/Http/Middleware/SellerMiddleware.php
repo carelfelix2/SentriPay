@@ -15,10 +15,10 @@ class SellerMiddleware
      */
     public function handle(Request $request, Closure $next): Response
     {
-        if (auth()->check() && auth()->user()->role === 'seller') {
+        if (auth()->check()) {
             return $next($request);
         }
 
-        return redirect('/')->with('error', 'Anda harus menjadi penjual untuk mengakses halaman ini');
+        return redirect('/login')->with('error', 'Silakan login untuk mengakses halaman ini');
     }
 }
