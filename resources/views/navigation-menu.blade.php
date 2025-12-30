@@ -12,9 +12,27 @@
 
                 <!-- Navigation Links -->
                 <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
-                    <x-nav-link href="{{ route('dashboard') }}" :active="request()->routeIs('dashboard')">
-                        {{ __('Dashboard') }}
-                    </x-nav-link>
+                    @auth
+                        <x-nav-link href="{{ route('dashboard') }}" :active="request()->routeIs('dashboard')">
+                            {{ __('Dashboard') }}
+                        </x-nav-link>
+                        <x-nav-link href="{{ route('products') }}" :active="request()->routeIs('products')">
+                            {{ __('Produk') }}
+                        </x-nav-link>
+                        <x-nav-link href="{{ route('orders') }}" :active="request()->routeIs('orders')">
+                            {{ __('Riwayat Pesanan') }}
+                        </x-nav-link>
+                        <x-nav-link href="{{ route('seller.products') }}" :active="request()->routeIs('seller.products')">
+                            {{ __('Kelola Produk') }}
+                        </x-nav-link>
+                    @else
+                        <x-nav-link href="{{ route('home') }}" :active="request()->routeIs('home')">
+                            {{ __('Home') }}
+                        </x-nav-link>
+                        <x-nav-link href="{{ route('products') }}" :active="request()->routeIs('products')">
+                            {{ __('Produk') }}
+                        </x-nav-link>
+                    @endauth
                 </div>
             </div>
 
@@ -156,6 +174,14 @@
             <x-responsive-nav-link href="{{ route('dashboard') }}" :active="request()->routeIs('dashboard')">
                 {{ __('Dashboard') }}
             </x-responsive-nav-link>
+            @auth
+                <x-responsive-nav-link href="{{ route('orders') }}" :active="request()->routeIs('orders')">
+                    {{ __('Riwayat Pesanan') }}
+                </x-responsive-nav-link>
+                <x-responsive-nav-link href="{{ route('seller.products') }}" :active="request()->routeIs('seller.products')">
+                    {{ __('Kelola Produk') }}
+                </x-responsive-nav-link>
+            @endauth
         </div>
 
         <!-- Responsive Settings Options -->

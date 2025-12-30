@@ -57,7 +57,7 @@ class CheckoutOrder extends Component
             'status' => 'pending_payment',
         ]);
 
-        return redirect()->route('order.payment', $order->id);
+        return redirect()->route('order.payment', $order->order_number);
     }
 
     public function render()

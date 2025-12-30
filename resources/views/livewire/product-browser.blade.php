@@ -17,7 +17,7 @@
             }">
                 <div class="bg-white rounded-lg shadow p-6 sticky top-4">
                     <button @click="open = !open" class="lg:hidden w-full mb-4 px-4 py-2 bg-blue-600 text-white rounded-lg">
-                        {{ open ? 'Tutup Filter' : 'Buka Filter' }}
+                        <span x-text="open ? 'Tutup Filter' : 'Buka Filter'"></span>
                     </button>
 
                     <div :class="{ 'hidden': !open, 'block': open }" class="lg:block">
@@ -92,7 +92,31 @@
                         <!-- Product Info -->
                         <div class="p-4">
                             <h3 class="font-semibold text-gray-900 mb-2 line-clamp-2">{{ $product->name }}</h3>
-                            <p class="text-sm text-gray-600 line-clamp-2 mb-4">{{ $product->description }}</p>
+                            <p class="text-sm text-gray-600 line-clamp-2 mb-3">{{ $product->description }}</p>
+                            
+                            <!-- Rating -->
+                            @php
+                                $avgRating = $product->averageRating();
+                                $totalReviews = $product->totalReviews();
+                            @endphp
+                            @if($totalReviews > 0)
+                            <div class="flex items-center gap-2 mb-3">
+                                <div class="flex">
+                                    @for ($i = 1; $i <= 5; $i++)
+                                        @if ($i <= floor($avgRating))
+                                            <svg class="w-4 h-4" viewBox="0 0 20 20">
+                                                <path fill="#FACC15" d="M10 15l-5.878 3.09 1.123-6.545L.489 6.91l6.572-.955L10 0l2.939 5.955 6.572.955-4.756 4.635 1.123 6.545z"/>
+                                            </svg>
+                                        @else
+                                            <svg class="w-4 h-4" viewBox="0 0 20 20">
+                                                <path fill="#FEF08A" d="M10 15l-5.878 3.09 1.123-6.545L.489 6.91l6.572-.955L10 0l2.939 5.955 6.572.955-4.756 4.635 1.123 6.545z"/>
+                                            </svg>
+                                        @endif
+                                    @endfor
+                                </div>
+                                <span class="text-sm text-gray-600">{{ number_format($avgRating, 1) }} ({{ $totalReviews }})</span>
+                            </div>
+                            @endif
                             
                             <div class="flex items-center justify-between mb-4">
                                 <span class="text-2xl font-bold text-blue-600">Rp {{ number_format($product->price, 0, ',', '.') }}</span>

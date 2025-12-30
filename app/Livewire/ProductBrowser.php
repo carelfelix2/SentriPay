@@ -13,7 +13,6 @@ class ProductBrowser extends Component
     public $search = '';
     public $category = '';
     public $sortBy = 'newest';
-    public $products = [];
 
     public function updatedSearch()
     {
@@ -27,7 +26,9 @@ class ProductBrowser extends Component
 
     public function render()
     {
-        $query = Product::where('status', 'available');
+        $query = Product::where('status', 'available')
+            ->where('stock', '>', 0)
+            ->where('user_id', '!=', auth()->id());
 
         if ($this->search) {
             $query->where('name', 'like', '%' . $this->search . '%')
@@ -45,7 +46,7 @@ class ProductBrowser extends Component
             default => $query->latest(),
         };
 
-        $products = $query->paginate(12);
+        $products = $query->with('seller')->paginate(12);
 
         return view('livewire.product-browser', [
             'products' => $products,

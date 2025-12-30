@@ -111,40 +111,27 @@
 
         <!-- Main Content -->
         <div class="max-w-7xl mx-auto px-4 py-8">
-            <!-- Voucher & Cashback Section -->
-            <div class="mb-12">
-                <div class="mb-6">
-                    <p class="text-lg font-semibold text-gray-900">Voucher & Cashback</p>
-                    <p class="text-sm text-gray-600">Nikmati potongan harga harian</p>
+        <!-- Main Content -->
+        <div class="max-w-7xl mx-auto px-4 py-8">
+            <!-- Main Content -->
+            <div class="max-w-7xl mx-auto px-4 py-8">
+                    <div>
+                        <p class="text-sm font-semibold text-gray-900">Voucher & Cashback</p>
+                        <p class="text-xs text-gray-600">Nikmati potongan harga harian</p>
+                            <a href="{{ route('products') }}" class="text-orange-700 hover:text-orange-800 font-semibold text-sm">Lihat Semua →</a>
                 </div>
-                
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-                    <!-- Voucher Card -->
-                    <div class="flex items-center gap-4 bg-orange-50 border border-orange-100 rounded-xl p-4 hover:shadow-md transition">
-                        <div class="bg-orange-500 text-white w-12 h-12 flex flex-shrink-0 items-center justify-center rounded-full text-xl font-bold">🎟️</div>
-                        <div class="flex-grow">
-                            <p class="text-sm font-semibold text-gray-900">Voucher & Cashback</p>
-                            <p class="text-xs text-gray-600">Nikmati potongan harga</p>
-                        </div>
-                        <a href="{{ route('products') }}" class="text-orange-700 hover:text-orange-800 font-semibold text-xs whitespace-nowrap ml-2">Lihat →</a>
+                <div class="flex items-center gap-3 bg-emerald-50 border border-emerald-100 rounded-xl px-4 py-3">
+                    <div class="bg-emerald-500 text-white w-10 h-10 flex items-center justify-center rounded-full text-lg font-bold">🚚</div>
+                    <div>
+                        <p class="text-sm font-semibold text-gray-900">Gratis Ongkir</p>
+                        <p class="text-xs text-gray-600">Khusus produk bertanda hijau</p>
                     </div>
-                    
-                    <!-- Free Shipping Card -->
-                    <div class="flex items-center gap-4 bg-emerald-50 border border-emerald-100 rounded-xl p-4 hover:shadow-md transition">
-                        <div class="bg-emerald-500 text-white w-12 h-12 flex flex-shrink-0 items-center justify-center rounded-full text-xl font-bold">🚚</div>
-                        <div class="flex-grow">
-                            <p class="text-sm font-semibold text-gray-900">Gratis Ongkir</p>
-                            <p class="text-xs text-gray-600">Produk pilihan</p>
-                        </div>
-                    </div>
-                    
-                    <!-- Secure Payment Card -->
-                    <div class="flex items-center gap-4 bg-sky-50 border border-sky-100 rounded-xl p-4 hover:shadow-md transition">
-                        <div class="bg-sky-500 text-white w-12 h-12 flex flex-shrink-0 items-center justify-center rounded-full text-xl font-bold">🛡️</div>
-                        <div class="flex-grow">
-                            <p class="text-sm font-semibold text-gray-900">Pembayaran Aman</p>
-                            <p class="text-xs text-gray-600">Proteksi transaksi</p>
-                        </div>
+                </div>
+                <div class="flex items-center gap-3 bg-sky-50 border border-sky-100 rounded-xl px-4 py-3">
+                    <div class="bg-sky-500 text-white w-10 h-10 flex items-center justify-center rounded-full text-lg font-bold">🛡️</div>
+                    <div>
+                        <p class="text-sm font-semibold text-gray-900">Pembayaran Aman</p>
+                        <p class="text-xs text-gray-600">Proteksi transaksi SentriPay</p>
                     </div>
                 </div>
             </div>
@@ -168,8 +155,7 @@
                     @foreach($featuredProducts as $product)
                     <div class="bg-white border border-orange-100 rounded-xl overflow-hidden hover:shadow-lg transition group">
                         <div class="relative">
-                            <a href="{{ route('product.show', $product) }}" class="block">
-                                @if($product->image_path)
+                            @if($product->image_path)
                                 <img src="{{ asset('storage/' . $product->image_path) }}" alt="{{ $product->name }}" class="w-full h-40 object-cover">
                             @else
                                 <div class="w-full h-40 bg-gradient-to-br from-orange-50 to-orange-100 flex items-center justify-center">
@@ -178,44 +164,15 @@
                                     </svg>
                                 </div>
                             @endif
-                            </a>
                             <div class="absolute top-2 left-2 bg-red-500 text-white text-xs font-bold px-2 py-1 rounded">Flash</div>
                             <div class="absolute bottom-2 left-2 bg-white/90 text-orange-600 text-xs font-semibold px-2 py-1 rounded">Hemat 10%</div>
                         </div>
                         <div class="p-3">
-                            <a href="{{ route('product.show', $product) }}" class="hover:underline">
-                                <h3 class="text-sm font-semibold text-gray-900 mb-1 line-clamp-1">{{ $product->name }}</h3>
-                            </a>
+                            <h3 class="text-sm font-semibold text-gray-900 mb-1 line-clamp-1">{{ $product->name }}</h3>
                             <p class="text-xs text-gray-500 mb-2 line-clamp-2">{{ $product->description }}</p>
                             <div class="flex items-center gap-2 mb-2">
                                 <span class="text-lg font-bold text-orange-600">Rp {{ number_format($product->price, 0, ',', '.') }}</span>
                                 <span class="text-xs text-gray-400 line-through">Rp {{ number_format($product->price * 1.1, 0, ',', '.') }}</span>
-                            </div>
-                            <!-- Rating Row -->
-                            @php
-                                $avgRating = $product->averageRating();
-                                $totalReviews = $product->totalReviews();
-                            @endphp
-                            <div class="flex items-center text-xs text-gray-500 mb-1">
-                                <div class="flex">
-                                    @for ($i = 1; $i <= 5; $i++)
-                                        @if ($i <= floor($avgRating))
-                                            <svg class="w-3 h-3 text-yellow-400 fill-current" viewBox="0 0 20 20">
-                                                <path d="M10 15l-5.878 3.09 1.123-6.545L.489 6.91l6.572-.955L10 0l2.939 5.955 6.572.955-4.756 4.635 1.123 6.545z"/>
-                                            </svg>
-                                        @else
-                                            <svg class="w-3 h-3 text-gray-300 fill-current" viewBox="0 0 20 20">
-                                                <path d="M10 15l-5.878 3.09 1.123-6.545L.489 6.91l6.572-.955L10 0l2.939 5.955 6.572.955-4.756 4.635 1.123 6.545z"/>
-                                            </svg>
-                                        @endif
-                                    @endfor
-                                </div>
-                                <span class="ml-2 text-gray-600">{{ number_format($avgRating, 1) }} @if($totalReviews > 0)({{ $totalReviews }})@endif</span>
-                            </div>
-                            <!-- Total Penjualan (below rating) -->
-                            <div class="flex items-center justify-between text-xs text-gray-600 mb-2">
-                                <span>Total Penjualan: {{ $product->sold }}</span>
-                                <span>Total Penjualan: {{ $product->sold }}</span>
                             </div>
                             <div class="flex items-center justify-between text-xs text-gray-500 mb-2">
                                 <span>Terjual {{ $product->sold }}</span>
@@ -242,7 +199,6 @@
                     @foreach($featuredProducts as $product)
                     <div class="bg-white rounded-xl shadow-lg overflow-hidden hover:shadow-2xl transform hover:-translate-y-1 transition group">
                         <div class="relative">
-                            <a href="{{ route('product.show', $product) }}" class="block">
                             @if($product->image_path)
                                 <img src="{{ asset('storage/' . $product->image_path) }}" alt="{{ $product->name }}" class="w-full h-56 object-cover">
                             @else
@@ -252,29 +208,16 @@
                                     </svg>
                                 </div>
                             @endif
-                            </a>
                             <div class="absolute top-2 right-2 bg-red-500 text-white px-3 py-1 rounded-full text-xs font-bold">
                                 HOT
                             </div>
                         </div>
                         <div class="p-5">
-                            <a href="{{ route('product.show', $product) }}" class="hover:underline">
-                                <h3 class="font-bold text-gray-900 text-lg mb-2 line-clamp-1">{{ $product->name }}</h3>
-                            </a>
+                            <h3 class="font-bold text-gray-900 text-lg mb-2 line-clamp-1">{{ $product->name }}</h3>
                             <p class="text-gray-600 text-sm mb-3 line-clamp-2">{{ $product->description }}</p>
                             <div class="flex items-center justify-between mb-4">
                                 <span class="text-2xl font-bold text-orange-600">Rp {{ number_format($product->price, 0, ',', '.') }}</span>
                                 <span class="text-xs text-gray-500 bg-gray-100 px-2 py-1 rounded">Terjual {{ $product->sold }}</span>
-                            </div>
-                            <!-- Rating Row -->
-                            <div class="flex items-center text-xs text-gray-500 mb-2">
-                                <span class="text-yellow-400">★★★★☆</span>
-                                <span class="ml-2 text-gray-600">4.8</span>
-                            </div>
-                            <!-- Total Penjualan (below rating) -->
-                            <div class="flex items-center justify-between text-xs text-gray-600 mb-4">
-                                <span>Total Penjualan: {{ $product->sold }}</span>
-                                <span>Total Penjualan: {{ $product->sold }}</span>
                             </div>
                             <a href="{{ route('checkout', $product->id) }}" class="block w-full bg-gradient-to-r from-orange-500 to-orange-600 text-white text-center py-3 rounded-lg hover:from-orange-600 hover:to-orange-700 transition font-semibold group-hover:scale-105 transform">
                                 Beli Sekarang
@@ -299,7 +242,6 @@
                         @foreach($availableProducts as $product)
                         <div class="bg-white rounded-lg shadow hover:shadow-xl overflow-hidden transition group">
                             <div class="relative">
-                                <a href="{{ route('product.show', $product) }}" class="block">
                                 @if($product->image_path)
                                     <img src="{{ asset('storage/' . $product->image_path) }}" alt="{{ $product->name }}" class="w-full h-48 object-cover">
                                 @else
@@ -309,27 +251,14 @@
                                         </svg>
                                     </div>
                                 @endif
-                                </a>
                             </div>
-                                <div class="p-4">
-                                    <a href="{{ route('product.show', $product) }}" class="hover:underline">
-                                        <h3 class="font-semibold text-gray-900 mb-1 line-clamp-1">{{ $product->name }}</h3>
-                                </a>
+                            <div class="p-4">
+                                <h3 class="font-semibold text-gray-900 mb-1 line-clamp-1">{{ $product->name }}</h3>
                                 <div class="flex items-center text-xs text-gray-500 mb-2">
                                     <svg class="w-3 h-3 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
                                     </svg>
                                     {{ $product->seller->name }}
-                                </div>
-                                <!-- Rating Row -->
-                                <div class="flex items-center text-xs text-gray-500 mb-2">
-                                    <span class="text-yellow-400">★★★★☆</span>
-                                    <span class="ml-2 text-gray-600">4.8</span>
-                                </div>
-                                <!-- Total Penjualan (below rating) -->
-                                <div class="flex items-center justify-between text-xs text-gray-600 mb-2">
-                                    <span>Total Penjualan: {{ $product->sold }}</span>
-                                    <span>Total Penjualan: {{ $product->sold }}</span>
                                 </div>
                                 <div class="flex justify-between items-center mb-3">
                                     <span class="text-lg font-bold text-orange-600">Rp {{ number_format($product->price, 0, ',', '.') }}</span>

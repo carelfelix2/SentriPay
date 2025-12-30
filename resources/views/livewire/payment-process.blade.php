@@ -74,13 +74,23 @@
                 <div class="bg-white rounded-lg shadow p-6">
                     <h2 class="text-2xl font-bold text-gray-900 mb-6">Upload Bukti Pembayaran</h2>
 
-                    <form wire:submit="submitPaymentProof" class="space-y-6">
+                    @if(session('error'))
+                        <div class="mb-6 p-4 bg-red-50 border border-red-200 rounded-lg">
+                            <p class="text-red-700 font-semibold">⚠️ Error</p>
+                            <p class="text-red-600 text-sm">{{ session('error') }}</p>
+                        </div>
+                    @endif
+
+                    <form 
+                        wire:submit.prevent="submitPaymentProof" 
+                        class="space-y-6">
                         <!-- Bank Name -->
                         <div>
                             <label class="block text-gray-700 font-semibold mb-2">Bank Pengirim</label>
                             <select 
                                 wire:model="bankName"
-                                class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-transparent @error('bankName') border-red-500 @enderror"
+                                wire:loading.attr="disabled"
+                                class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-transparent @error('bankName') border-red-500 @enderror disabled:bg-gray-100 disabled:cursor-not-allowed"
                             >
                                 <option value="">Pilih Bank</option>
                                 <option value="BCA">BCA</option>
@@ -98,8 +108,9 @@
                             <input 
                                 type="text" 
                                 wire:model="accountNumber"
+                                wire:loading.attr="disabled"
                                 placeholder="Nomor rekening Anda"
-                                class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-transparent @error('accountNumber') border-red-500 @enderror"
+                                class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-transparent @error('accountNumber') border-red-500 @enderror disabled:bg-gray-100 disabled:cursor-not-allowed"
                             >
                             @error('accountNumber') <span class="text-red-600 text-sm">{{ $message }}</span> @enderror
                         </div>
@@ -110,7 +121,8 @@
                             <input 
                                 type="date" 
                                 wire:model="transferDate"
-                                class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-transparent @error('transferDate') border-red-500 @enderror"
+                                wire:loading.attr="disabled"
+                                class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-transparent @error('transferDate') border-red-500 @enderror disabled:bg-gray-100 disabled:cursor-not-allowed"
                             >
                             @error('transferDate') <span class="text-red-600 text-sm">{{ $message }}</span> @enderror
                         </div>
@@ -118,30 +130,68 @@
                         <!-- Bank Proof Upload -->
                         <div x-data="{ 
                             fileName: '',
-                            @listen('file-uploaded')
-                        }">
+                            fileSize: '',
+                            previewUrl: ''
+                        }" wire:key="bank-proof-upload">
                             <label class="block text-gray-700 font-semibold mb-2">Bukti Transfer (Screenshot/Foto)</label>
+                            
+                            @if($bankProof)
+                                <!-- File Preview -->
+                                <div class="mb-4 p-4 bg-green-50 border border-green-200 rounded-lg">
+                                    <div class="flex items-center gap-3">
+                                        <svg class="w-6 h-6 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                                        </svg>
+                                        <div class="flex-1">
+                                            <p class="text-sm font-semibold text-green-800">File berhasil dipilih</p>
+                                            <p class="text-xs text-green-700">{{ $bankProof->getClientOriginalName() }} ({{ round($bankProof->getSize() / 1024, 2) }} KB)</p>
+                                        </div>
+                                        <button 
+                                            type="button"
+                                            wire:click="$set('bankProof', null)"
+                                            class="text-green-600 hover:text-green-800 font-medium text-sm">
+                                            Ganti
+                                        </button>
+                                    </div>
+                                </div>
+                                
+                                <!-- Image Preview -->
+                                <div class="mb-4">
+                                    <img src="{{ $bankProof->temporaryUrl() }}" alt="Preview" class="max-h-64 rounded-lg border border-gray-200">
+                                </div>
+                            @endif
+                            
                             <div class="border-2 border-dashed border-gray-300 rounded-lg p-8 text-center hover:border-blue-600 transition cursor-pointer"
                                  @dragover="$el.classList.add('border-blue-600', 'bg-blue-50')"
                                  @dragleave="$el.classList.remove('border-blue-600', 'bg-blue-50')"
-                                 @drop="$el.classList.remove('border-blue-600', 'bg-blue-50')">
+                                 @drop="$el.classList.remove('border-blue-600', 'bg-blue-50')"
+                                 :class="@entangle('bankProof').defer ? 'hidden' : ''">
                                 <input 
                                     type="file" 
-                                    wire:model="bankProof"
+                                    wire:model.live="bankProof"
                                     accept="image/*"
                                     class="hidden"
                                     id="bankProofInput"
-                                    @change="fileName = $el.files[0]?.name"
+                                    @change="fileName = $el.files[0]?.name; fileSize = $el.files[0]?.size"
                                 >
                                 <label for="bankProofInput" class="cursor-pointer block">
-                                    <svg class="mx-auto h-12 w-12 text-gray-400 mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
-                                    </svg>
-                                    <p class="text-gray-700 font-semibold">Drag dan drop atau klik untuk upload</p>
-                                    <p class="text-gray-500 text-sm">Format: JPG, PNG, GIF (Maks: 2MB)</p>
+                                    @if($bankProof)
+                                    @else
+                                        <svg class="mx-auto h-12 w-12 text-gray-400 mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+                                        </svg>
+                                        <p class="text-gray-700 font-semibold">Drag dan drop atau klik untuk upload</p>
+                                        <p class="text-gray-500 text-sm">Format: JPG, PNG, GIF (Maks: 2MB)</p>
+                                    @endif
                                 </label>
                             </div>
-                            @error('bankProof') <span class="text-red-600 text-sm">{{ $message }}</span> @enderror
+                            
+                            @error('bankProof') 
+                                <div class="mt-2 p-3 bg-red-50 border border-red-200 rounded-lg">
+                                    <p class="text-red-700 text-sm font-semibold">⚠️ Error</p>
+                                    <p class="text-red-600 text-sm">{{ $message }}</p>
+                                </div>
+                            @enderror
                         </div>
 
                         <!-- Notes -->
@@ -149,16 +199,17 @@
                             <label class="block text-gray-700 font-semibold mb-2">Catatan (Opsional)</label>
                             <textarea 
                                 wire:model="notes"
+                                wire:loading.attr="disabled"
                                 rows="3"
                                 placeholder="Tambahkan catatan apapun..."
-                                class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-transparent"
+                                class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-transparent disabled:bg-gray-100 disabled:cursor-not-allowed"
                             ></textarea>
                         </div>
 
                         <!-- Confirmation -->
                         <div class="bg-gray-50 p-4 rounded-lg">
                             <label class="flex items-center">
-                                <input type="checkbox" required class="rounded border-gray-300">
+                                <input type="checkbox" required wire:loading.attr="disabled" class="rounded border-gray-300 disabled:opacity-50">
                                 <span class="ml-3 text-gray-700 text-sm">Saya menjamin bahwa bukti transfer di atas adalah asli dan sesuai</span>
                             </label>
                         </div>
@@ -166,13 +217,22 @@
                         <!-- Submit Button -->
                         <button 
                             type="submit"
-                            class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-4 rounded-lg transition">
-                            Konfirmasi Pembayaran
+                            wire:loading.attr="disabled"
+                            class="w-full bg-blue-600 hover:bg-blue-700 disabled:bg-gray-400 disabled:cursor-not-allowed text-white font-bold py-3 px-4 rounded-lg transition">
+                            <span wire:loading.remove>Konfirmasi Pembayaran</span>
+                            <span wire:loading>
+                                <svg class="inline animate-spin h-5 w-5 mr-2" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                                    <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                                    <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                                </svg>
+                                Memproses...
+                            </span>
                         </button>
                     </form>
 
                     <button 
-                        @click="$wire.set('step', 1)"
+                        type="button"
+                        wire:click="$set('step', 1)"
                         class="w-full mt-4 bg-gray-200 hover:bg-gray-300 text-gray-900 font-bold py-2 px-4 rounded-lg">
                         Kembali
                     </button>

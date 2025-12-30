@@ -62,6 +62,16 @@ class Order extends Model
         return $this->belongsTo(Dispute::class);
     }
 
+    public function review()
+    {
+        return $this->hasOne(Review::class);
+    }
+
+    public function chatGroup()
+    {
+        return $this->hasOne(ChatGroup::class);
+    }
+
     public function generateOrderNumber()
     {
         return 'ORD-' . date('Ymd') . '-' . strtoupper(uniqid());

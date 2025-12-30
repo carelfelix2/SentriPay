@@ -16,6 +16,8 @@ class Dashboard extends Component
     public $recentOrders = [];
     public $availableProducts = [];
     public $myProducts = [];
+    public $featuredProducts = [];
+    public $categories = [];
 
     public function mount()
     {
@@ -51,19 +53,34 @@ class Dashboard extends Component
 
         $this->balance = $this->user->balance;
 
-        // Load products
+        // Load products for e-commerce view (exclude seller's own products)
         $this->availableProducts = Product::where('status', 'available')
             ->where('user_id', '!=', $this->user->id)
             ->where('stock', '>', 0)
             ->with('seller')
             ->latest()
-            ->take(6)
+            ->take(12)
+            ->get();
+
+        $this->featuredProducts = Product::where('status', 'available')
+            ->where('user_id', '!=', $this->user->id)
+            ->where('stock', '>', 0)
+            ->with('seller')
+            ->orderBy('sold', 'desc')
+            ->take(4)
             ->get();
 
         $this->myProducts = Product::where('user_id', $this->user->id)
             ->latest()
             ->take(6)
             ->get();
+
+        // Get unique categories
+        $this->categories = Product::where('status', 'available')
+            ->where('stock', '>', 0)
+            ->distinct()
+            ->pluck('category')
+            ->take(6);
     }
 
     public function render()
